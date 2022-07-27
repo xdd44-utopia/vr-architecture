@@ -5,6 +5,7 @@ using UnityEngine;
 public class DrawingModel : MonoBehaviour
 {
 	public GameObject drawingWorld;
+	private PlaneConstructor planeContructor;
 	private LineRenderer lrWorld;
 	private LineRenderer lrModel;
 	void Start()
@@ -18,9 +19,16 @@ public class DrawingModel : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		if (planeContructor == null) {
+			planeContructor = GameObject.Find("PlaneConstructor").GetComponent<PlaneConstructor>();
+		}
 		while (lrWorld.positionCount < lrModel.positionCount) {
 			lrWorld.positionCount += 1;
 			lrWorld.SetPosition(lrWorld.positionCount - 1, lrModel.GetPosition(lrWorld.positionCount - 1));
 		}
+	}
+	
+	public void finish() {
+		planeContructor.receiveLine(lrWorld);
 	}
 }

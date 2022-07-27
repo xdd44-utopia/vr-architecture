@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 
-public class BrushPointer : MonoBehaviour
+public class Debuger : MonoBehaviour
 {
-	public Transform handTransform;
+	void Start()
+	{
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
-		transform.position = handTransform.position;
+		
+	}
+	public void buttonCheck() {
+		Debug.Log("clicked");
 	}
 }

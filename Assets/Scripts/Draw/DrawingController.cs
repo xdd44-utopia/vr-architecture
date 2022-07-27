@@ -9,12 +9,21 @@ public class DrawingController : MonoBehaviour
 	public SteamVR_Input_Sources handType;
 	public Transform handTransform;
 	public GameObject drawingSegment;
+	[HideInInspector]
+	public bool contains;
+	[HideInInspector]
+	public bool isTriggerDown;
+	[HideInInspector]
+	public bool isTriggerComingDown;
+	[HideInInspector]
+	public bool isTriggerComingUp;
+	private GameObject curSegment;
 	public ModelTransform modelTransform;
 	private LineRenderer curLine;
-	private bool isTriggerDown = false;
 	private bool isPrevTriggerDown = false;
 	void Start()
 	{
+		isTriggerDown = false;
 		GrabPinch.AddOnStateDownListener(triggerDown, handType);
 		GrabPinch.AddOnStateUpListener(triggerUp, handType);
 	}
@@ -22,10 +31,11 @@ public class DrawingController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		if (isTriggerDown) {
+		contains = isInside();
+		if (isTriggerDown && isInside()) {
 			if (!isPrevTriggerDown) {
-				GameObject obj = Instantiate(drawingSegment, this.transform);
-				curLine = obj.GetComponent<LineRenderer>();
+				curSegment = Instantiate(drawingSegment, this.transform);
+				curLine = curSegment.GetComponent<LineRenderer>();
 				curLine.SetWidth(0.01f, 0.01f);
 				modelTransform.locked = true;
 			}
@@ -38,8 +48,19 @@ public class DrawingController : MonoBehaviour
 		else {
 			modelTransform.locked = false;
 		}
+		isTriggerComingDown = isTriggerDown & !isPrevTriggerDown;
+		isTriggerComingUp = !isTriggerDown & isPrevTriggerDown;
+		if (isTriggerComingUp) {
+			curSegment.GetComponent<DrawingModel>().finish();
+		}
 		isPrevTriggerDown = isTriggerDown;
 	}
+
+	private bool isInside() {
+		Vector3 handPos = transform.InverseTransformPoint(handTransform.position);
+		return !(handPos.x > 6 || handPos.x < -6 || handPos.y > 6 || handPos.y < 0 || handPos.z > 6 || handPos.z < -6);
+	}
+
 	public void triggerDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource) {
 		isTriggerDown = true;
 	}
