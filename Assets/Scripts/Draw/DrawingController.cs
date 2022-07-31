@@ -36,7 +36,8 @@ public class DrawingController : MonoBehaviour
 			if (!isPrevTriggerDown) {
 				curSegment = Instantiate(drawingSegment, this.transform);
 				curLine = curSegment.GetComponent<LineRenderer>();
-				curLine.SetWidth(0.01f, 0.01f);
+				curLine.startWidth = 0.01f;
+				curLine.endWidth = 0.01f;
 				modelTransform.locked = true;
 			}
 			else {

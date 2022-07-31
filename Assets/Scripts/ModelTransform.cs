@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
+using Valve.VR.InteractionSystem;
 
 public class ModelTransform : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class ModelTransform : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		Teleport.instance.CancelTeleportHint();
 		Vector3 target = headTransform.position + dist * new Vector3(Mathf.Sin(headTransform.rotation.eulerAngles.y * Mathf.PI / 180), -1.5f, Mathf.Cos(headTransform.rotation.eulerAngles.y * Mathf.PI / 180));
 		if (isTriggerDown) {
 			Vector3 deltaPos = headTransform.InverseTransformPoint(handTransform.position) - prevPos;
