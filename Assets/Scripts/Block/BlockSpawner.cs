@@ -5,35 +5,31 @@ using Valve.VR;
 
 public class BlockSpawner : MonoBehaviour
 {
-	public SteamVR_Action_Boolean SpawnAction;
-	public SteamVR_Input_Sources handType;
 	public GameObject block;
 	public Transform smallModel;
-	private Transform pointer;
 	// Start is called before the first frame update
 	void Start()
 	{
-		SpawnAction.AddOnStateDownListener(triggerDown, handType);
+		
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-
-		if (pointer == null) {
-			pointer = GameObject.Find("BrushPointer").transform;
+		if (GestureHandler.leftGrabClicked) {
+			spawn(GestureHandler.leftHandPos);
 		}
-
+		if (GestureHandler.rightGrabClicked) {
+			spawn(GestureHandler.rightHandPos);
+		}
 	}
 
-	public void triggerDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource) {
-		GameObject realObject = Instantiate(block, pointer.position + pointer.forward, Quaternion.identity);
+	private void spawn(Vector3 pos) {
+		GameObject realObject = Instantiate(block, pos, Quaternion.identity);
 		GameObject smallObject = Instantiate(block, smallModel);
+		realObject.transform.GetChild(0).gameObject.GetComponent<BlockController>().synchroBlock = smallObject.transform;
+		smallObject.transform.GetChild(0).gameObject.GetComponent<BlockController>().synchroBlock = realObject.transform;
 		smallObject.transform.localPosition = realObject.transform.localPosition;
 		smallObject.transform.localScale = realObject.transform.localScale;
-		realObject.transform.GetChild(1).GetComponent<PositionHandle>().synchroBlock = smallObject.transform;
-		smallObject.transform.GetChild(1).GetComponent<PositionHandle>().synchroBlock = realObject.transform;
-		realObject.transform.GetChild(2).GetComponent<ScaleHandle>().synchroBlock = smallObject.transform.GetChild(0).transform;
-		smallObject.transform.GetChild(2).GetComponent<ScaleHandle>().synchroBlock = realObject.transform.GetChild(0).transform;
 	}
 }
