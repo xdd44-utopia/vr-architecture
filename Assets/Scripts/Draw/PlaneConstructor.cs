@@ -71,7 +71,6 @@ public class PlaneConstructor : MonoBehaviour
 		newPlane.transform.GetChild(1).GetComponent<MeshCollider>().sharedMesh = mesh;
 	}
 	public void triggerDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource) {
-		Debug.Log("?");
 		if (line1 != null && line2 != null) {
 			constructPlane();
 			line1 = null;

@@ -8,7 +8,6 @@ public class Pointer : MonoBehaviour
 	public EventSystem eventSystem;
 	public StandaloneInputModule inputModule;
 
-	private DrawingController drawingController;
 	private LineRenderer lr;
 	private MeshRenderer mr;
 	private float defaultLength = 3;
@@ -21,15 +20,16 @@ public class Pointer : MonoBehaviour
 	void Awake() {
 		mr = transform.GetChild(0).GetComponent<MeshRenderer>();
 		lr = transform.GetChild(1).GetComponent<LineRenderer>();
-		drawingController = GameObject.Find("DrawingController").GetComponent<DrawingController>();
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		mr.enabled = drawingController.contains;
-		lr.enabled = !drawingController.contains;
-		updateLength();
+		mr.enabled = !(StatusRecord.tool == StatusRecord.ControllerStatus.Menu);
+		lr.enabled = StatusRecord.tool == StatusRecord.ControllerStatus.Menu;
+		if (lr.enabled) {
+			updateLength();
+		}
 	}
 
 	private void updateLength() {

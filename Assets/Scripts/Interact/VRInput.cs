@@ -7,23 +7,21 @@ public class VRInput : BaseInput
 {
 
 	public Camera eventCamera;
-	private DrawingController drawingController;
 
 	protected override void Awake() {
-		drawingController = GameObject.Find("DrawingController").GetComponent<DrawingController>();
 		GetComponent<BaseInputModule>().inputOverride = this;
 	}
 
 	public override bool GetMouseButton(int button) {
-		return drawingController.isTriggerDown & !drawingController.contains;
+		return (GestureHandler.leftTriggerClicked || GestureHandler.leftTriggerPressed) && StatusRecord.tool == StatusRecord.ControllerStatus.Menu;
 	}
 
 	public override bool GetMouseButtonDown(int button) {
-		return drawingController.isTriggerComingDown & !drawingController.contains;
+		return GestureHandler.leftTriggerDown && StatusRecord.tool == StatusRecord.ControllerStatus.Menu;
 	}
 
 	public override bool GetMouseButtonUp(int button) {
-		return drawingController.isTriggerComingUp & !drawingController.contains;
+		return GestureHandler.leftTriggerUp && StatusRecord.tool == StatusRecord.ControllerStatus.Menu;
 	}
 
 	public override Vector2 mousePosition {

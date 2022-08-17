@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 175217339929142457}
   m_Layer: 0
   m_Name: Block
-  m_TagString: Untagged
+  m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,6 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69b6c37862a5a734b9dc9d34711b4ad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  synchroBlock: {fileID: 0}
+  currentColor: 0
 --- !u!1 &175217341289194270
 GameObject:
   m_ObjectHideFlags: 0

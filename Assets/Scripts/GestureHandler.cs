@@ -18,11 +18,14 @@ public class GestureHandler : MonoBehaviour
 
 	public static Vector3 headPos;
 
-	public static bool leftTriggerClicked = false;
-	public static bool leftTriggerPressed = false;
+	public static bool leftTriggerClicked = false; //Pressed for a very short time
+	public static bool leftTriggerPressed = false; //Is current frame down
+	public static bool leftTriggerPrev = false; //Is previous frame down
+	public static bool leftTriggerDown = false; //The frame when trigger is pressed down
+	public static bool leftTriggerUp = false; //The frame when trigger is released
 	public static bool leftGrabClicked = false;
 	public static bool leftGrabPressed = false;
-	public static Vector3 leftHandInitPos;
+	public static Vector3 leftHandInitPos; //Position at the frame when trigger is pressed down
 	public static Vector3 leftHandDeltaPos;
 	public static Vector3 leftHandPos;
 	private float leftTriggerTimer = 0;
@@ -32,6 +35,9 @@ public class GestureHandler : MonoBehaviour
 
 	public static bool rightTriggerClicked = false;
 	public static bool rightTriggerPressed = false;
+	public static bool rightTriggerPrev = false;
+	public static bool rightTriggerDown = false;
+	public static bool rightTriggerUp = false;
 	public static bool rightGrabClicked = false;
 	public static bool rightGrabPressed = false;
 	public static Vector3 rightHandInitPos;
@@ -83,6 +89,9 @@ public class GestureHandler : MonoBehaviour
 		else {
 			leftGrabFrame++;
 		}
+		leftTriggerDown = !leftTriggerPrev && (leftTriggerClicked || leftTriggerPressed);
+		leftTriggerUp = leftTriggerPrev && !(leftTriggerClicked || leftTriggerPressed);
+		leftTriggerPrev = leftTriggerClicked || leftTriggerPressed;
 
 		rightTriggerTimer += Time.deltaTime;
 		if (rightTriggerClicked && rightTriggerFrame == 1) {
@@ -99,6 +108,9 @@ public class GestureHandler : MonoBehaviour
 		else {
 			rightGrabFrame++;
 		}
+		rightTriggerDown = !rightTriggerPrev && (rightTriggerClicked || rightTriggerPressed);
+		rightTriggerUp = rightTriggerPrev && !(rightTriggerClicked || rightTriggerPressed);
+		rightTriggerPrev = rightTriggerClicked || rightTriggerPressed;
 	}
 
 	public void leftTiggerDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource) {
