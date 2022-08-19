@@ -6,7 +6,7 @@ using Valve.VR;
 public class DrawingController : MonoBehaviour
 {
 	public GameObject drawingSegment;
-	private GameObject curSegment;
+	public GameObject curSegment;
 	public ModelTransform modelTransform;
 	private LineRenderer curLine;
 
@@ -36,14 +36,15 @@ public class DrawingController : MonoBehaviour
 			else {
 				modelTransform.locked = false;
 			}
-			if (GestureHandler.leftTriggerUp) {
+			if (GestureHandler.leftTriggerUp && curSegment != null) {
 				curSegment.GetComponent<DrawingModel>().finish();
+				curSegment = null;
 			}
 		}
 	}
 
 	private bool isInside() {
 		Vector3 handPos = transform.InverseTransformPoint(GestureHandler.leftHandPos);
-		return !(handPos.x > 6 || handPos.x < -6 || handPos.y > 6 || handPos.y < 0 || handPos.z > 6 || handPos.z < -6);
+		return !(handPos.x > 2.55f || handPos.x < -2.55f || handPos.y > 5 || handPos.y < 0 || handPos.z > 4.45f || handPos.z < -4.45f);
 	}
 }

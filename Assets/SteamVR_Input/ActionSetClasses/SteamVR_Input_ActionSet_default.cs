@@ -105,11 +105,19 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Boolean SwitchMenu
+        public virtual SteamVR_Action_Boolean Menu
         {
             get
             {
-                return SteamVR_Actions.default_SwitchMenu;
+                return SteamVR_Actions.default_Menu;
+            }
+        }
+        
+        public virtual SteamVR_Action_Vector2 TouchpadPosition
+        {
+            get
+            {
+                return SteamVR_Actions.default_TouchpadPosition;
             }
         }
         

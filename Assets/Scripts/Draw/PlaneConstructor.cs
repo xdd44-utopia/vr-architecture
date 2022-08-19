@@ -5,14 +5,20 @@ using Valve.VR;
 
 public class PlaneConstructor : MonoBehaviour
 {
-	public SteamVR_Action_Boolean SwitchMenu;
-	public SteamVR_Input_Sources handType;
 	public GameObject planePrefab;
 	private Vector3[] line1;
 	private Vector3[] line2;
 	void Start()
 	{
-		SwitchMenu.AddOnStateDownListener(triggerDown, handType);
+		
+	}
+
+	void Update() {
+		if ((GestureHandler.leftTriggerClicked || GestureHandler.rightTriggerClicked) && line1 != null && line2 != null) {
+			constructPlane();
+			line1 = null;
+			line2 = null;
+		}
 	}
 
 	public void receiveLine(LineRenderer lr) {
@@ -69,12 +75,7 @@ public class PlaneConstructor : MonoBehaviour
 		newPlane.transform.GetChild(0).GetComponent<MeshFilter>().mesh = mesh;
 		newPlane.transform.GetChild(1).GetComponent<MeshFilter>().mesh = mesh;
 		newPlane.transform.GetChild(1).GetComponent<MeshCollider>().sharedMesh = mesh;
+
 	}
-	public void triggerDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource) {
-		if (line1 != null && line2 != null) {
-			constructPlane();
-			line1 = null;
-			line2 = null;
-		}
-	}
+	
 }
