@@ -22,7 +22,8 @@ public class ToolMenuController : MonoBehaviour
 
 	private Vector3 enableScale = new Vector3(0.001f, 0.001f, 0.001f);
 	private bool isPrevHand = true;
-	private bool viewing = false;
+	[HideInInspector]
+	public bool viewing = false;
 
 	void Start()
 	{
@@ -33,7 +34,7 @@ public class ToolMenuController : MonoBehaviour
 	void Update()
 	{
 		timer += Time.deltaTime;
-		if (!viewing && GestureHandler.leftGrabClicked && !isInsideAnyBlock()) {
+		if (!viewing && GestureHandler.leftGrabClicked && !isInsideAnyBlock() && StatusRecord.tool != StatusRecord.ControllerStatus.Menu) {
 			isPrevHand = StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl;
 			buttons[0].GetComponent<Image>().sprite = isPrevHand ? drawTool : handTool;
 			if (StatusRecord.switchToRay()) {

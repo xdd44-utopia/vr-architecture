@@ -10,7 +10,6 @@ public class ModelTransform : MonoBehaviour
 	public bool locked;
 	private const float dist = 0.25f;
 	private float angle = 0;
-	private float scale = 1;
 	
 	private Material mat;
 	private Color insideColor = new Color(0, 0, 1, 0.8f);

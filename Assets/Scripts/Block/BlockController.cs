@@ -162,10 +162,10 @@ public class BlockController : MonoBehaviour
 			pos.x < blockTransform.position.x + 0.5f * blockTransform.localScale.x &&
 			pos.x > blockTransform.position.x - 0.5f * blockTransform.localScale.x &&
 			(
-				(isPlane &&
+				(!isPlane &&
 				pos.y < blockTransform.position.y + 0.5f * blockTransform.localScale.y &&
 				pos.y > blockTransform.position.y - 0.5f * blockTransform.localScale.y) ||
-				(!isPlane &&
+				(isPlane &&
 				pos.y < blockTransform.position.y + 0.2f &&
 				pos.y > blockTransform.position.y - 0.2f)
 			) &&
@@ -175,10 +175,10 @@ public class BlockController : MonoBehaviour
 			pos.x < blockTransform.position.x + 0.05f * blockTransform.localScale.x &&
 			pos.x > blockTransform.position.x - 0.05f * blockTransform.localScale.x &&
 			(
-				(isPlane &&
+				(!isPlane &&
 				pos.y < blockTransform.position.y + 0.05f * blockTransform.localScale.y &&
 				pos.y > blockTransform.position.y - 0.05f * blockTransform.localScale.y) ||
-				(!isPlane &&
+				(isPlane &&
 				pos.y < blockTransform.position.y + 0.05f &&
 				pos.y > blockTransform.position.y - 0.05f)
 			) &&

@@ -11,18 +11,19 @@ public class ColorMenuController : MonoBehaviour
 	private BlockController currentBlock;
 
 	public GameObject buttonPrefab;
-	public GameObject[] buttons;
-	public Sprite unselected;
-	public Sprite selected;
+	public GameObject selected;
+	private GameObject[] buttons;
 	public Material[] mats;
+	public Sprite[] sprites;
 	public static Material[] materials;
 
 	private float timer = 0;
 	private const float cooldown = 0.5f;
-	private bool viewing = false;
+	[HideInInspector]
+	public bool viewing = false;
 
 	[HideInInspector]
-	public int currentMat = -1;
+	public int currentMat = 0;
 	private Vector3 enableScale = new Vector3(0.001f, 0.001f, 0.001f);
 	void Start()
 	{
@@ -31,8 +32,9 @@ public class ColorMenuController : MonoBehaviour
 		for (int i=0;i<materials.Length;i++) {
 			buttons[i] = Instantiate(buttonPrefab, transform);
 			buttons[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(-288 + 192 * (i % 4), 96 - 192 * (i / 4));
-			buttons[i].GetComponent<Image>().material = materials[i];
+			buttons[i].GetComponent<Image>().sprite = sprites[i];
 		}
+		selected.transform.SetSiblingIndex(selected.transform.parent.childCount - 1);
 	}
 
 	// Update is called once per frame
@@ -47,11 +49,11 @@ public class ColorMenuController : MonoBehaviour
 				GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
 				viewing = false;
 			}
+			else {
+				Debug.Log("Failed");
+			}
 		}
 		if (viewing) {
-			for (int i=0;i<materials.Length;i++) {
-				buttons[i].GetComponent<Image>().sprite = i == currentMat ? selected : unselected;
-			}
 			if (timer > cooldown && (axisValue.axis.x != 0 || axisValue.axis.y != 0)) {
 				if (Mathf.Abs(axisValue.axis.x) > Mathf.Abs(axisValue.axis.y)) {
 					if (axisValue.axis.x > 0) {
@@ -84,6 +86,7 @@ public class ColorMenuController : MonoBehaviour
 					}
 				}
 				timer = 0;
+				selected.GetComponent<RectTransform>().anchoredPosition = new Vector2(-288 + 192 * (currentMat % 4), 96 - 192 * (currentMat / 4));
 				currentBlock.changeMat(currentMat, true);
 			}
 		}
