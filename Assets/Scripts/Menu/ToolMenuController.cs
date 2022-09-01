@@ -10,6 +10,9 @@ public class ToolMenuController : MonoBehaviour
 	public SteamVR_Action_Vector2 axisValue;
 
 	private BlockSpawner blockSpawner;
+	
+	public int num;
+	public int offset;
 
 	public GameObject[] buttons;
 	public Sprite handTool;
@@ -46,10 +49,10 @@ public class ToolMenuController : MonoBehaviour
 		else if (viewing) {
 			if (timer > cooldown && axisValue.axis.x != 0) {
 				currentSelect += axisValue.axis.x > 0 ? 1 : -1;
-				currentSelect = (currentSelect + 5) % 5;
+				currentSelect = (currentSelect + num) % num;
 				timer = 0;
 			}
-			selected.GetComponent<RectTransform>().anchoredPosition = new Vector2(-440 + currentSelect * 220, 0);
+			selected.GetComponent<RectTransform>().anchoredPosition = new Vector2(- 220 * (num / 2) + currentSelect * 220, 0);
 			if (GestureHandler.leftGrabClicked || GestureHandler.rightGrabClicked) {
 				closeMenu(isPrevHand);
 			}
@@ -58,7 +61,7 @@ public class ToolMenuController : MonoBehaviour
 					closeMenu(!isPrevHand);
 				}
 				else {
-					blockSpawner.spawn(currentSelect - 1);
+					blockSpawner.spawn(offset + currentSelect - 1);
 					closeMenu(true);
 				}
 			}

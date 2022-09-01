@@ -18,6 +18,10 @@ public class BlockController : MonoBehaviour
 	private Material invertedMat;
 	private GameObject inverted;
 
+	private float maxX;
+	private float maxY;
+	private float maxZ;
+
 	private enum Direction {
 		x, y, z
 	}
@@ -37,6 +41,8 @@ public class BlockController : MonoBehaviour
 		blockTransform = transform.parent;
 
 		isReal = blockTransform.parent == null;
+		
+		Mesh mesh = GetComponent<MeshFilter>().mesh;
 
 		if (blockTransform.gameObject.name[blockTransform.gameObject.name.Length - 1] == ')' && isReal) {
 			currentMat = Random.Range(0, ColorMenuController.materials.Length);
@@ -49,7 +55,7 @@ public class BlockController : MonoBehaviour
 				Destroy(child.gameObject);
 			}
 
-			Mesh mesh = inverted.GetComponent<MeshFilter>().mesh;
+			mesh = inverted.GetComponent<MeshFilter>().mesh;
 			int[] newTriangles = new int[mesh.triangles.Length];
 			for (int i=0;i<newTriangles.Length;i++) {
 				newTriangles[i] = mesh.triangles[i / 3 * 3 + (3 - i % 3) % 3];
@@ -60,6 +66,22 @@ public class BlockController : MonoBehaviour
 
 		}
 		originalMat = GetComponent<Renderer>().material;
+		
+		mesh = GetComponent<MeshFilter>().mesh;
+		for (int i=0;i<mesh.vertices.Length;i++) {
+			maxX = Mathf.Max(maxX, mesh.vertices[i].x);
+			maxY = Mathf.Max(maxY, mesh.vertices[i].y);
+			maxZ = Mathf.Max(maxZ, mesh.vertices[i].z);
+		}
+		if (isPlane) {
+			maxY = 0.2f;
+		}
+		if (!isReal) {
+			maxX /= 10;
+			maxY /= 10;
+			maxZ /= 10;
+		}
+
 	}
 
 	// Update is called once per frame
@@ -158,32 +180,12 @@ public class BlockController : MonoBehaviour
 	}
 	private bool isInside(Vector3 pos) {
 		return
-			(isReal &&
-			pos.x < blockTransform.position.x + 0.5f * blockTransform.localScale.x &&
-			pos.x > blockTransform.position.x - 0.5f * blockTransform.localScale.x &&
-			(
-				(!isPlane &&
-				pos.y < blockTransform.position.y + 0.5f * blockTransform.localScale.y &&
-				pos.y > blockTransform.position.y - 0.5f * blockTransform.localScale.y) ||
-				(isPlane &&
-				pos.y < blockTransform.position.y + 0.2f &&
-				pos.y > blockTransform.position.y - 0.2f)
-			) &&
-			pos.z < blockTransform.position.z + 0.5f * blockTransform.localScale.z &&
-			pos.z > blockTransform.position.z - 0.5f * blockTransform.localScale.z) ||
-			(!isReal &&
-			pos.x < blockTransform.position.x + 0.05f * blockTransform.localScale.x &&
-			pos.x > blockTransform.position.x - 0.05f * blockTransform.localScale.x &&
-			(
-				(!isPlane &&
-				pos.y < blockTransform.position.y + 0.05f * blockTransform.localScale.y &&
-				pos.y > blockTransform.position.y - 0.05f * blockTransform.localScale.y) ||
-				(isPlane &&
-				pos.y < blockTransform.position.y + 0.05f &&
-				pos.y > blockTransform.position.y - 0.05f)
-			) &&
-			pos.z < blockTransform.position.z + 0.05f * blockTransform.localScale.z &&
-			pos.z > blockTransform.position.z - 0.05f * blockTransform.localScale.z);
+			pos.x < blockTransform.position.x + maxX * blockTransform.localScale.x &&
+			pos.x > blockTransform.position.x - maxX * blockTransform.localScale.x &&
+			pos.y < blockTransform.position.y + maxY * blockTransform.localScale.y &&
+			pos.y > blockTransform.position.y - maxY * blockTransform.localScale.y &&
+			pos.z < blockTransform.position.z + maxZ * blockTransform.localScale.z &&
+			pos.z > blockTransform.position.z - maxZ * blockTransform.localScale.z;
 	}
 
 	public void changeMat(int i, bool isActive) {
@@ -200,5 +202,19 @@ public class BlockController : MonoBehaviour
 		if (isActive) {
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().changeMat(i, false);
 		}
+	}
+
+	public void deleteBlock(bool isActive) {
+		if (isActive) {
+			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().deleteBlock(false);
+		}
+		Destroy(transform.parent.gameObject);
+	}
+
+	public void rotateBlock(bool isActive) {
+		if (isActive) {
+			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().rotateBlock(false);
+		}
+		transform.parent.localRotation = Quaternion.Euler(0, transform.parent.localRotation.eulerAngles.y + 90, 0);
 	}
 }
