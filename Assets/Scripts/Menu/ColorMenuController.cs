@@ -71,7 +71,6 @@ public class ColorMenuController : MonoBehaviour
 			if (timer > cooldown && (axisValue.axis.x != 0 || axisValue.axis.y != 0)) {
 				if (Mathf.Abs(axisValue.axis.x) > Mathf.Abs(axisValue.axis.y)) {
 					if (axisValue.axis.x > 0) {
-						Debug.Log(currentMat);
 						currentMat += 1;
 						if (currentMat == row) {
 							currentMat = 0;
@@ -79,10 +78,8 @@ public class ColorMenuController : MonoBehaviour
 						if (currentMat == row * 2) {
 							currentMat = row;
 						}
-						Debug.Log(currentMat);
 					}
 					else {
-						Debug.Log(currentMat);
 						currentMat -= 1;
 						if (currentMat == -1) {
 							currentMat = row - 1;
@@ -90,21 +87,16 @@ public class ColorMenuController : MonoBehaviour
 						if (currentMat == row - 1) {
 							currentMat = row * 2 - 1;
 						}
-						Debug.Log(currentMat);
 					}
 				}
 				else {
 					if (axisValue.axis.y > 0) {
-						Debug.Log(currentMat);
 						currentMat += row;
 						currentMat = currentMat % (row * 2);
-						Debug.Log(currentMat);
 					}
 					else {
-						Debug.Log(currentMat);
 						currentMat += (row * 3);
 						currentMat = currentMat % (row * 2);
-						Debug.Log(currentMat);
 					}
 				}
 				timer = 0;

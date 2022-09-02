@@ -98,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   synchroBlock: {fileID: 0}
   isPlane: 0
+  bt: 1
   currentMat: 0
 --- !u!1 &175217341289194270
 GameObject:

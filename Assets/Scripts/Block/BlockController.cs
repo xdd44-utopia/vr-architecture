@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BlockController : MonoBehaviour
 {
+	private int blockID;
 
 	private ColorMenuController colorMenu;
 	private GameObject highlight;
@@ -11,12 +12,9 @@ public class BlockController : MonoBehaviour
 	//[HideInInspector]
 	public Transform synchroBlock;
 	private Transform blockTransform;
-	public bool isPlane;
 	private bool isReal;
 
 	private Material originalMat;
-	private Material invertedMat;
-	private GameObject inverted;
 
 	private float maxX;
 	private float maxY;
@@ -27,12 +25,27 @@ public class BlockController : MonoBehaviour
 	}
 	private Direction scaleDir;
 	private Vector3 initScale;
+	private bool isRotated = false;
+	private bool hasMoved = false;
+	private bool hasRotated = false;
+
+	public enum BlockType {
+		block,
+		furniture,
+		plane,
+		wall,
+		floor
+	}
+	public BlockType bt;
 
 	[HideInInspector]
 	public int currentMat;
 	
 	void Awake()
 	{
+		blockID = StatusRecord.blockCount;
+		StatusRecord.blockCount++;
+
 		colorMenu = GameObject.Find("ColorMenu").GetComponent<ColorMenuController>();
 		if (transform.parent.childCount > 1) {
 			highlight = transform.parent.GetChild(1).gameObject;
@@ -42,39 +55,24 @@ public class BlockController : MonoBehaviour
 
 		isReal = blockTransform.parent == null;
 		
-		Mesh mesh = GetComponent<MeshFilter>().mesh;
-
-		if (blockTransform.gameObject.name[blockTransform.gameObject.name.Length - 1] == ')' && isReal) {
-			currentMat = Random.Range(0, ColorMenuController.materials.Length);
-			inverted = Instantiate(this.gameObject, this.transform);
-			Destroy(inverted.GetComponent<BlockController>());
-			inverted.transform.localPosition = Vector3.zero;
-			inverted.transform.localRotation = Quaternion.identity;
-			inverted.transform.localScale = Vector3.one;
-			foreach (Transform child in inverted.transform) {
-				Destroy(child.gameObject);
-			}
-
-			mesh = inverted.GetComponent<MeshFilter>().mesh;
-			int[] newTriangles = new int[mesh.triangles.Length];
-			for (int i=0;i<newTriangles.Length;i++) {
-				newTriangles[i] = mesh.triangles[i / 3 * 3 + (3 - i % 3) % 3];
-			}
-			mesh.triangles = newTriangles;
-			mesh.MarkModified();
-			mesh.RecalculateNormals();
-
-		}
 		originalMat = GetComponent<Renderer>().material;
 		
-		mesh = GetComponent<MeshFilter>().mesh;
+		Mesh mesh = GetComponent<MeshFilter>().mesh;
 		for (int i=0;i<mesh.vertices.Length;i++) {
 			maxX = Mathf.Max(maxX, mesh.vertices[i].x);
 			maxY = Mathf.Max(maxY, mesh.vertices[i].y);
 			maxZ = Mathf.Max(maxZ, mesh.vertices[i].z);
 		}
-		if (isPlane) {
-			maxY = 0.2f;
+		switch (bt) {
+			case BlockType.plane:
+				maxY = 0.2f;
+				break;
+			case BlockType.floor:
+				maxY = 0.2f;
+				break;
+			case BlockType.wall:
+				maxX = 0.2f;
+				break;
 		}
 		if (!isReal) {
 			maxX /= 10;
@@ -89,59 +87,93 @@ public class BlockController : MonoBehaviour
 	{
 		originalMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, blockTransform.localScale.y > 2f ? 0.4f : 0.9f);
 		GetComponent<Renderer>().material = originalMat;
-		if (isReal) {
-			invertedMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, 0.4f);
-			inverted.GetComponent<Renderer>().material = invertedMat;
-		}
 
 		//Move
 
-		if (GestureHandler.leftTriggerPressed && !GestureHandler.rightTriggerPressed && leftHandInside() && !headInside() && StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl) {
-			blockTransform.position += GestureHandler.leftHandDeltaPos;
-			synchroBlock.transform.localPosition = blockTransform.localPosition;
+		hasMoved = false;
+		Vector3 deltaPos = Vector3.zero;
+		if (GestureHandler.leftTriggerPressed && !GestureHandler.rightTriggerPressed && leftHandInside() &&
+			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl &&
+			(StatusRecord.currentBlock == blockID || StatusRecord.currentBlock == -1)
+		) {
+			deltaPos = GestureHandler.leftHandDeltaPos;
+			StatusRecord.currentBlock = blockID;
+			hasMoved = true;
 		}
-		if (GestureHandler.rightTriggerPressed && !GestureHandler.leftTriggerPressed && rightHandInside() && !headInside() && StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl) {
-			blockTransform.position += GestureHandler.rightHandDeltaPos;
-			synchroBlock.transform.localPosition = blockTransform.localPosition;
+		else if (GestureHandler.rightTriggerPressed && !GestureHandler.leftTriggerPressed && rightHandInside() &&
+			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl &&
+			(StatusRecord.currentBlock == blockID || StatusRecord.currentBlock == -1)
+		) {
+			deltaPos = GestureHandler.rightHandDeltaPos;
+			StatusRecord.currentBlock = blockID;
+			hasMoved = true;
+		}
+		else if (StatusRecord.currentBlock == blockID && !hasRotated) {
+			StatusRecord.currentBlock = -1;
+		}
+		blockTransform.position += deltaPos;
+		synchroBlock.transform.localPosition = blockTransform.localPosition;
+		if (isReal) {
+			switch (bt) {
+				case BlockType.floor:
+					blockTransform.position = new Vector3(blockTransform.position.x, 3.5f, blockTransform.position.z);
+					synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, 3.5f, blockTransform.position.z);
+					break;
+				case BlockType.wall:
+					blockTransform.position = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.75f : 5.25f, blockTransform.position.z);
+					synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.75f : 5.25f, blockTransform.position.z);
+					break;
+			}
 		}
 
 		//Scale
-
+		hasRotated = false;
 		if (
 			((GestureHandler.leftTriggerDown && GestureHandler.rightTriggerDown) ||
 			(GestureHandler.leftTriggerPressed && GestureHandler.rightTriggerDown) ||
 			(GestureHandler.leftTriggerDown && GestureHandler.rightTriggerPressed)) &&
-			leftHandInside() && rightHandInside() && !headInside() &&
+			leftHandInside() && rightHandInside() &&
 			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl
 		) {
-			if (
+			if (bt == BlockType.wall) {
+				scaleDir = Direction.z;
+			}
+			else if (
 				Mathf.Abs(GestureHandler.leftHandPos.x - GestureHandler.rightHandPos.x) > Mathf.Abs(GestureHandler.leftHandPos.y - GestureHandler.rightHandPos.y) &&
 				Mathf.Abs(GestureHandler.leftHandPos.x - GestureHandler.rightHandPos.x) > Mathf.Abs(GestureHandler.leftHandPos.z - GestureHandler.rightHandPos.z)
 			) {
-				scaleDir = Direction.x;
+				scaleDir = !isRotated ? Direction.x : Direction.z;
 			}
 			else if  (
 				(Mathf.Abs(GestureHandler.leftHandPos.z - GestureHandler.rightHandPos.z) > Mathf.Abs(GestureHandler.leftHandPos.y - GestureHandler.rightHandPos.y) &&
-				Mathf.Abs(GestureHandler.leftHandPos.z - GestureHandler.rightHandPos.z) > Mathf.Abs(GestureHandler.leftHandPos.x - GestureHandler.rightHandPos.x)) || isPlane
+				Mathf.Abs(GestureHandler.leftHandPos.z - GestureHandler.rightHandPos.z) > Mathf.Abs(GestureHandler.leftHandPos.x - GestureHandler.rightHandPos.x)) ||
+				bt == BlockType.plane || bt == BlockType.floor
 			) {
-				scaleDir = Direction.z;
+				scaleDir = !isRotated ? Direction.z : Direction.x;
 			}
 			else {
 				scaleDir = Direction.y;
 			}
 			initScale = blockTransform.localScale;
 		}
-		if (GestureHandler.leftTriggerPressed && GestureHandler.rightTriggerPressed && leftHandInside() && rightHandInside() && !headInside() && StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl) {
+		if (GestureHandler.leftTriggerPressed && GestureHandler.rightTriggerPressed && leftHandInside() && rightHandInside() &&
+			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl &&
+			(StatusRecord.currentBlock == blockID || StatusRecord.currentBlock == -1)
+		) {
 			float scalar = 1;
 			switch (scaleDir) {
 				case Direction.x:
-					scalar = (GestureHandler.leftHandPos.x - GestureHandler.rightHandPos.x) / (GestureHandler.leftHandInitPos.x - GestureHandler.rightHandInitPos.x);
+					scalar = !isRotated ?
+						(GestureHandler.leftHandPos.x - GestureHandler.rightHandPos.x) / (GestureHandler.leftHandInitPos.x - GestureHandler.rightHandInitPos.x) :
+						(GestureHandler.leftHandPos.z - GestureHandler.rightHandPos.z) / (GestureHandler.leftHandInitPos.z - GestureHandler.rightHandInitPos.z);
 					break;
 				case Direction.y:
 					scalar = (GestureHandler.leftHandPos.y - GestureHandler.rightHandPos.y) / (GestureHandler.leftHandInitPos.y - GestureHandler.rightHandInitPos.y);
 					break;
 				case Direction.z:
-					scalar = (GestureHandler.leftHandPos.z - GestureHandler.rightHandPos.z) / (GestureHandler.leftHandInitPos.z - GestureHandler.rightHandInitPos.z);
+					scalar = !isRotated ?
+						(GestureHandler.leftHandPos.z - GestureHandler.rightHandPos.z) / (GestureHandler.leftHandInitPos.z - GestureHandler.rightHandInitPos.z) :
+						(GestureHandler.leftHandPos.x - GestureHandler.rightHandPos.x) / (GestureHandler.leftHandInitPos.x - GestureHandler.rightHandInitPos.x);
 					break;
 			}
 			scalar = Mathf.Clamp(scalar, 0.2f, 5f);
@@ -151,11 +183,15 @@ public class BlockController : MonoBehaviour
 				scaleDir == Direction.z ? initScale.z * scalar : initScale.z
 			);
 			synchroBlock.transform.localScale = blockTransform.localScale;
+			StatusRecord.currentBlock = blockID;
+		}
+		else if (StatusRecord.currentBlock == blockID && !hasMoved) {
+			StatusRecord.currentBlock = -1;
 		}
 
 		//Menu
 
-		highlight.SetActive((leftHandInside() || rightHandInside()) && ((isReal && !headInside()) || !isReal));
+		highlight.SetActive(leftHandInside() || rightHandInside());
 		highlight.transform.localScale = transform.localScale * 1.01f;
 		if (canOpenMenu()) {
 			if (StatusRecord.tool != StatusRecord.ControllerStatus.Menu) {
@@ -166,7 +202,7 @@ public class BlockController : MonoBehaviour
 	}
 	
 	public bool canOpenMenu() {
-		return ((GestureHandler.leftGrabClicked && leftHandInside()) || (GestureHandler.rightGrabClicked && rightHandInside())) && ((isReal && !headInside()) || !isReal);
+		return (GestureHandler.leftGrabClicked && leftHandInside()) || (GestureHandler.rightGrabClicked && rightHandInside());
 	}
 
 	private bool leftHandInside() {
@@ -175,17 +211,14 @@ public class BlockController : MonoBehaviour
 	private bool rightHandInside() {
 		return isInside(GestureHandler.rightHandPos);
 	}
-	private bool headInside() {
-		return isInside(GestureHandler.headPos);
-	}
 	private bool isInside(Vector3 pos) {
 		return
-			pos.x < blockTransform.position.x + maxX * blockTransform.localScale.x &&
-			pos.x > blockTransform.position.x - maxX * blockTransform.localScale.x &&
+			pos.x < blockTransform.position.x + (!isRotated ? maxX : maxZ) * blockTransform.localScale.x &&
+			pos.x > blockTransform.position.x - (!isRotated ? maxX : maxZ) * blockTransform.localScale.x &&
 			pos.y < blockTransform.position.y + maxY * blockTransform.localScale.y &&
 			pos.y > blockTransform.position.y - maxY * blockTransform.localScale.y &&
-			pos.z < blockTransform.position.z + maxZ * blockTransform.localScale.z &&
-			pos.z > blockTransform.position.z - maxZ * blockTransform.localScale.z;
+			pos.z < blockTransform.position.z + (!isRotated ? maxZ : maxX) * blockTransform.localScale.z &&
+			pos.z > blockTransform.position.z - (!isRotated ? maxZ : maxX) * blockTransform.localScale.z;
 	}
 
 	public void changeMat(int i, bool isActive) {
@@ -195,10 +228,6 @@ public class BlockController : MonoBehaviour
 		currentMat = i;
 		originalMat = new Material(ColorMenuController.materials[currentMat]);
 		GetComponent<Renderer>().material = originalMat;
-		if (isReal) {
-			invertedMat = new Material(originalMat);
-			inverted.GetComponent<Renderer>().material = invertedMat;
-		}
 		if (isActive) {
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().changeMat(i, false);
 		}
@@ -216,5 +245,6 @@ public class BlockController : MonoBehaviour
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().rotateBlock(false);
 		}
 		transform.parent.localRotation = Quaternion.Euler(0, transform.parent.localRotation.eulerAngles.y + 90, 0);
+		isRotated = !isRotated;
 	}
 }

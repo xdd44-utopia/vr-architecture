@@ -9,6 +9,8 @@ public class StatusRecord : MonoBehaviour
 		BlockControl,
 		Menu
 	}
+	public static int blockCount;
+	public static int currentBlock;
 	public static ControllerStatus tool;
 	private GameObject teleport;
 	private static float timer = 0;
@@ -16,6 +18,8 @@ public class StatusRecord : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
+		blockCount = 0;
+		currentBlock = -1;
 		tool = ControllerStatus.BlockControl;
 		teleport = GameObject.Find("Teleporting");
 	}

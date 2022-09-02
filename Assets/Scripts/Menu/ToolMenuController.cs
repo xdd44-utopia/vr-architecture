@@ -13,6 +13,7 @@ public class ToolMenuController : MonoBehaviour
 	
 	public int num;
 	public int offset;
+	private int row = 5;
 
 	public GameObject[] buttons;
 	public Sprite handTool;
@@ -48,11 +49,40 @@ public class ToolMenuController : MonoBehaviour
 		}
 		else if (viewing) {
 			if (timer > cooldown && axisValue.axis.x != 0) {
-				currentSelect += axisValue.axis.x > 0 ? 1 : -1;
-				currentSelect = (currentSelect + num) % num;
+				if (Mathf.Abs(axisValue.axis.x) > Mathf.Abs(axisValue.axis.y)) {
+					if (axisValue.axis.x > 0) {
+						currentSelect += 1;
+						if (currentSelect == row) {
+							currentSelect = 0;
+						}
+						if (currentSelect == row * 2) {
+							currentSelect = row;
+						}
+					}
+					else {
+						currentSelect -= 1;
+						if (currentSelect == -1) {
+							currentSelect = row - 1;
+						}
+						if (currentSelect == row - 1) {
+							currentSelect = row * 2 - 1;
+						}
+					}
+				}
+				else {
+					if (axisValue.axis.y > 0) {
+						currentSelect += row;
+						currentSelect = currentSelect % (row * 2);
+					}
+					else {
+						currentSelect += (row * 3);
+						currentSelect = currentSelect % (row * 2);
+					}
+				}
 				timer = 0;
+				currentSelect = currentSelect < num - 1 ? currentSelect : num - 1;
 			}
-			selected.GetComponent<RectTransform>().anchoredPosition = new Vector2(- 220 * (num / 2) + currentSelect * 220, 0);
+			selected.GetComponent<RectTransform>().anchoredPosition = new Vector2(-440 + 220 * (currentSelect % row), 110 - 220 * (currentSelect / row));
 			if (GestureHandler.leftGrabClicked || GestureHandler.rightGrabClicked) {
 				closeMenu(isPrevHand);
 			}
