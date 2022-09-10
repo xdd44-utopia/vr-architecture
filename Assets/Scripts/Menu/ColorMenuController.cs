@@ -37,6 +37,7 @@ public class ColorMenuController : MonoBehaviour
 			buttons[i].GetComponent<Image>().sprite = sprites[i];
 		}
 		selected.transform.SetSiblingIndex(selected.transform.parent.childCount - 1);
+		GetComponent<RectTransform>().localScale = Vector3.zero;
 	}
 
 	// Update is called once per frame

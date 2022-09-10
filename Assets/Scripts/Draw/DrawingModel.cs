@@ -13,6 +13,8 @@ public class DrawingModel : MonoBehaviour
 		GameObject obj = Instantiate(drawingWorld, new Vector3(0, 0, 0), Quaternion.identity);
 		lrWorld = obj.GetComponent<LineRenderer>();
 		lrWorld.positionCount = 0;
+		lrWorld.startWidth = 0.025f;
+		lrWorld.endWidth = 0.025f;
 		lrModel = GetComponent<LineRenderer>();
 	}
 

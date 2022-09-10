@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 175217339929142459}
   - component: {fileID: 175217339929142458}
   - component: {fileID: 175217339929142457}
+  - component: {fileID: 2058743377816009199}
   m_Layer: 0
   m_Name: Block
   m_TagString: Block
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 175217339929142456}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.005, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 175217341289194271}
@@ -97,9 +98,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   synchroBlock: {fileID: 0}
-  isPlane: 1
   bt: 2
   currentMat: 0
+--- !u!64 &2058743377816009199
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175217339929142456}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &175217341289194270
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,7 +139,7 @@ Transform:
   m_GameObject: {fileID: 175217341289194270}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.001, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 175217339929142436}
@@ -160,7 +174,7 @@ Transform:
   m_GameObject: {fileID: 8702314303008452559}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.01, y: 0.00505, z: 1.01}
+  m_LocalScale: {x: 1.01, y: 1.01, z: 1.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 175217341289194271}

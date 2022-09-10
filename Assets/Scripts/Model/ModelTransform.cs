@@ -20,7 +20,7 @@ public class ModelTransform : MonoBehaviour
 	private bool modelEnabled = true;
 	private const float enableScale = 0.05f;
 	private const float disableScale = 0.005f;
-	private const float enableHandleRadius = 0.25f;
+	private const float enableHandleRadius = 0.32f;
 	private const float disableHandleRadius = 0.1f;
 	
 	void Start()
@@ -36,7 +36,7 @@ public class ModelTransform : MonoBehaviour
 		isInside = Vector3.Distance(GestureHandler.rightHandPos, transform.position) < transform.lossyScale.x;
 		mat.color = isInside ? insideColor : outsideColor;
 
-		Vector3 target = headTransform.position + dist * new Vector3(Mathf.Sin(headTransform.rotation.eulerAngles.y * Mathf.PI / 180), -1.5f, Mathf.Cos(headTransform.rotation.eulerAngles.y * Mathf.PI / 180));
+		Vector3 target = headTransform.position + dist * new Vector3(Mathf.Sin(headTransform.rotation.eulerAngles.y * Mathf.PI / 180), headTransform.position.y < 2f ? -1.5f : -2.5f, Mathf.Cos(headTransform.rotation.eulerAngles.y * Mathf.PI / 180));
 
 		if (GestureHandler.rightTriggerClicked && isInside) {
 			modelEnabled = !modelEnabled;

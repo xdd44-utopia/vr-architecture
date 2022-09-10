@@ -10,7 +10,7 @@ public class Pointer : MonoBehaviour
 
 	private MeshRenderer hand;
 	private MeshRenderer draw;
-	private float defaultLength = 3;
+	// private float defaultLength = 3;
 	
 	void Start()
 	{

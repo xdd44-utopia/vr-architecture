@@ -9,13 +9,12 @@ public class ToolMenuController : MonoBehaviour
 {
 	public SteamVR_Action_Vector2 axisValue;
 
-	private BlockSpawner blockSpawner;
+	public SpawnMenuController[] menus;
 	
 	public int num;
-	public int offset;
-	private int row = 5;
+	private int row = 4;
 
-	public GameObject[] buttons;
+	public GameObject buttonTool;
 	public Sprite handTool;
 	public Sprite drawTool;
 	public GameObject selected;
@@ -31,7 +30,7 @@ public class ToolMenuController : MonoBehaviour
 
 	void Start()
 	{
-		blockSpawner = GameObject.Find("BlockSpawner").GetComponent<BlockSpawner>();
+		GetComponent<RectTransform>().localScale = Vector3.zero;
 	}
 
 	// Update is called once per frame
@@ -40,7 +39,7 @@ public class ToolMenuController : MonoBehaviour
 		timer += Time.deltaTime;
 		if (!viewing && GestureHandler.leftGrabClicked && !isInsideAnyBlock() && StatusRecord.tool != StatusRecord.ControllerStatus.Menu) {
 			isPrevHand = StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl;
-			buttons[0].GetComponent<Image>().sprite = isPrevHand ? drawTool : handTool;
+			buttonTool.GetComponent<Image>().sprite = isPrevHand ? drawTool : handTool;
 			if (StatusRecord.switchToRay()) {
 				GetComponent<RectTransform>().localScale = enableScale;
 				currentSelect = 0;
@@ -48,7 +47,7 @@ public class ToolMenuController : MonoBehaviour
 			}
 		}
 		else if (viewing) {
-			if (timer > cooldown && axisValue.axis.x != 0) {
+			if (timer > cooldown && (axisValue.axis.x != 0 || axisValue.axis.y != 0)) {
 				if (Mathf.Abs(axisValue.axis.x) > Mathf.Abs(axisValue.axis.y)) {
 					if (axisValue.axis.x > 0) {
 						currentSelect += 1;
@@ -82,21 +81,30 @@ public class ToolMenuController : MonoBehaviour
 				timer = 0;
 				currentSelect = currentSelect < num - 1 ? currentSelect : num - 1;
 			}
-			selected.GetComponent<RectTransform>().anchoredPosition = new Vector2(-440 + 220 * (currentSelect % row), 110 - 220 * (currentSelect / row));
+			selected.GetComponent<RectTransform>().anchoredPosition = new Vector2(-330 + 220 * (currentSelect % row), 110 - 220 * (currentSelect / row));
 			if (GestureHandler.leftGrabClicked || GestureHandler.rightGrabClicked) {
 				closeMenu(isPrevHand);
 			}
-			if (GestureHandler.leftTriggerClicked || GestureHandler.rightTriggerClicked) {
+			if ((GestureHandler.leftTriggerClicked || GestureHandler.rightTriggerClicked) && timer > cooldown) {
 				if (currentSelect == 0) {
 					closeMenu(!isPrevHand);
 				}
 				else {
-					blockSpawner.spawn(offset + currentSelect - 1);
-					closeMenu(true);
+					menus[currentSelect - 1].openMenu(isPrevHand);
+					GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
+					viewing = false;
 				}
 			}
 		}
 
+	}
+	
+	public void openMenu(bool isHand) {
+		isPrevHand = isHand;
+		GetComponent<RectTransform>().localScale = enableScale;
+		currentSelect = 0;
+		viewing = true;
+		timer = 0;
 	}
 
 	private void closeMenu(bool isHand) {

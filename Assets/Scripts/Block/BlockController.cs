@@ -9,9 +9,11 @@ public class BlockController : MonoBehaviour
 	private ColorMenuController colorMenu;
 	private GameObject highlight;
 
-	//[HideInInspector]
+	[HideInInspector]
 	public Transform synchroBlock;
 	private Transform blockTransform;
+	private Rigidbody rb;
+	private bool hasrb;
 	private bool isReal;
 
 	private Material originalMat;
@@ -40,6 +42,8 @@ public class BlockController : MonoBehaviour
 
 	[HideInInspector]
 	public int currentMat;
+
+	private bool isLofi;
 	
 	void Awake()
 	{
@@ -47,13 +51,19 @@ public class BlockController : MonoBehaviour
 		StatusRecord.blockCount++;
 
 		colorMenu = GameObject.Find("ColorMenu").GetComponent<ColorMenuController>();
-		if (transform.parent.childCount > 1) {
-			highlight = transform.parent.GetChild(1).gameObject;
-		}
+		highlight = transform.parent.GetChild(1).gameObject;
 
 		blockTransform = transform.parent;
 
 		isReal = blockTransform.parent == null;
+		hasrb = isReal && (bt == BlockType.block || bt == BlockType.furniture);
+		if (hasrb) {
+			rb = blockTransform.gameObject.GetComponent<Rigidbody>();
+		}
+		else {
+			Destroy(blockTransform.gameObject.GetComponent<MeshCollider>());
+			Destroy(blockTransform.gameObject.GetComponent<Rigidbody>());
+		}
 		
 		originalMat = GetComponent<Renderer>().material;
 		
@@ -79,6 +89,12 @@ public class BlockController : MonoBehaviour
 			maxY /= 10;
 			maxZ /= 10;
 		}
+		maxX *= 1.01f;
+		maxY *= 1.01f;
+		maxZ *= 1.01f;
+
+		GameObject Lofi = GameObject.Find("ToolMenu-LoFi");
+		isLofi = Lofi != null && Lofi.activeSelf;
 
 	}
 
@@ -87,6 +103,9 @@ public class BlockController : MonoBehaviour
 	{
 		originalMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, blockTransform.localScale.y > 2f ? 0.4f : 0.9f);
 		GetComponent<Renderer>().material = originalMat;
+		if (rb == null) {
+			rb = synchroBlock.gameObject.GetComponent<Rigidbody>();
+		}
 
 		//Move
 
@@ -98,6 +117,9 @@ public class BlockController : MonoBehaviour
 		) {
 			deltaPos = GestureHandler.leftHandDeltaPos;
 			StatusRecord.currentBlock = blockID;
+			if (hasrb) {
+				rb.isKinematic = true;
+			}
 			hasMoved = true;
 		}
 		else if (GestureHandler.rightTriggerPressed && !GestureHandler.leftTriggerPressed && rightHandInside() &&
@@ -106,9 +128,15 @@ public class BlockController : MonoBehaviour
 		) {
 			deltaPos = GestureHandler.rightHandDeltaPos;
 			StatusRecord.currentBlock = blockID;
+			if (hasrb) {
+				rb.isKinematic = true;
+			}
 			hasMoved = true;
 		}
 		else if (StatusRecord.currentBlock == blockID && !hasRotated) {
+			if (hasrb) {
+				rb.isKinematic = false;
+			}
 			StatusRecord.currentBlock = -1;
 		}
 		blockTransform.position += deltaPos;
@@ -116,8 +144,10 @@ public class BlockController : MonoBehaviour
 		if (isReal) {
 			switch (bt) {
 				case BlockType.floor:
-					blockTransform.position = new Vector3(blockTransform.position.x, 3.5f, blockTransform.position.z);
-					synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, 3.5f, blockTransform.position.z);
+					if (!isLofi) {
+						blockTransform.position = new Vector3(blockTransform.position.x, 3.5f, blockTransform.position.z);
+						synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, 3.5f, blockTransform.position.z);
+					}
 					break;
 				case BlockType.wall:
 					blockTransform.position = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.75f : 5.25f, blockTransform.position.z);
@@ -184,9 +214,15 @@ public class BlockController : MonoBehaviour
 			);
 			synchroBlock.transform.localScale = blockTransform.localScale;
 			StatusRecord.currentBlock = blockID;
+			if (hasrb) {
+				rb.isKinematic = true;
+			}
 		}
 		else if (StatusRecord.currentBlock == blockID && !hasMoved) {
 			StatusRecord.currentBlock = -1;
+			if (hasrb) {
+				rb.isKinematic = false;
+			}
 		}
 
 		//Menu
