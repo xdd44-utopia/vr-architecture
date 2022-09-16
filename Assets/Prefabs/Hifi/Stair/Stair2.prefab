@@ -177,7 +177,8 @@ GameObject:
   - component: {fileID: 8294009911516511566}
   - component: {fileID: 2522958241300002719}
   - component: {fileID: 3113352116337035008}
-  m_Layer: 0
+  - component: {fileID: 2012419599786317439}
+  m_Layer: 3
   m_Name: Teleport
   m_TagString: Block
   m_Icon: {fileID: 0}
@@ -263,6 +264,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   locked: 0
   markerActive: 1
+--- !u!64 &2012419599786317439
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436585729331027314}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 1193402864903878048, guid: d6c297c02f8f39b4cb94af7997cd8b05, type: 3}
 --- !u!1 &8702314303008452559
 GameObject:
   m_ObjectHideFlags: 0

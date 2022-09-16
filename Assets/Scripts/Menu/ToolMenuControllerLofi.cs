@@ -9,6 +9,9 @@ public class ToolMenuControllerLofi : MonoBehaviour
 {
 	public SteamVR_Action_Vector2 axisValue;
 
+	public GameObject[] enables;
+	public GameObject[] disables;
+
 	private BlockSpawner blockSpawner;
 	
 	public int num;
@@ -32,6 +35,12 @@ public class ToolMenuControllerLofi : MonoBehaviour
 	void Start()
 	{
 		blockSpawner = GameObject.Find("LofiSpawner").GetComponent<BlockSpawner>();
+		foreach (GameObject go in enables) {
+			go.SetActive(true);
+		}
+		foreach (GameObject go in disables) {
+			go.SetActive(false);
+		}
 	}
 
 	// Update is called once per frame

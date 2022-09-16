@@ -145,13 +145,15 @@ public class BlockController : MonoBehaviour
 			switch (bt) {
 				case BlockType.floor:
 					if (!isLofi) {
-						blockTransform.position = new Vector3(blockTransform.position.x, 3.5f, blockTransform.position.z);
-						synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, 3.5f, blockTransform.position.z);
+						blockTransform.position = new Vector3(blockTransform.position.x, 3f, blockTransform.position.z);
+						synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, 3f, blockTransform.position.z);
 					}
 					break;
 				case BlockType.wall:
-					blockTransform.position = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.75f : 5.25f, blockTransform.position.z);
-					synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.75f : 5.25f, blockTransform.position.z);
+					if (!isLofi) {
+						blockTransform.position = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.5f : 4.5f, blockTransform.position.z);
+						synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.5f : 4.5f, blockTransform.position.z);
+					}
 					break;
 			}
 		}
@@ -165,8 +167,8 @@ public class BlockController : MonoBehaviour
 			leftHandInside() && rightHandInside() &&
 			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl
 		) {
-			if (bt == BlockType.wall) {
-				scaleDir = Direction.z;
+			if (bt == BlockType.wall && !isLofi) {
+				scaleDir = isRotated ? Direction.z : Direction.x;
 			}
 			else if (
 				Mathf.Abs(GestureHandler.leftHandPos.x - GestureHandler.rightHandPos.x) > Mathf.Abs(GestureHandler.leftHandPos.y - GestureHandler.rightHandPos.y) &&
@@ -249,12 +251,12 @@ public class BlockController : MonoBehaviour
 	}
 	private bool isInside(Vector3 pos) {
 		return
-			pos.x < blockTransform.position.x + (!isRotated ? maxX : maxZ) * blockTransform.localScale.x &&
-			pos.x > blockTransform.position.x - (!isRotated ? maxX : maxZ) * blockTransform.localScale.x &&
+			pos.x < blockTransform.position.x + (!isRotated ? maxX : maxZ) * (!isRotated ? blockTransform.localScale.x : blockTransform.localScale.z) &&
+			pos.x > blockTransform.position.x - (!isRotated ? maxX : maxZ) * (!isRotated ? blockTransform.localScale.x : blockTransform.localScale.z) &&
 			pos.y < blockTransform.position.y + maxY * blockTransform.localScale.y &&
 			pos.y > blockTransform.position.y - maxY * blockTransform.localScale.y &&
-			pos.z < blockTransform.position.z + (!isRotated ? maxZ : maxX) * blockTransform.localScale.z &&
-			pos.z > blockTransform.position.z - (!isRotated ? maxZ : maxX) * blockTransform.localScale.z;
+			pos.z < blockTransform.position.z + (!isRotated ? maxZ : maxX) * (!isRotated ? blockTransform.localScale.z : blockTransform.localScale.x) &&
+			pos.z > blockTransform.position.z - (!isRotated ? maxZ : maxX) * (!isRotated ? blockTransform.localScale.z : blockTransform.localScale.x);
 	}
 
 	public void changeMat(int i, bool isActive) {

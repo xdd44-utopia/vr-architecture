@@ -1025,7 +1025,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &174625273
 Transform:
   m_ObjectHideFlags: 0
@@ -1533,7 +1533,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 80b1705171ef42a49a6e982fd6ccbe90, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0af2e2fc005316e4fb9abcdc60ee2720, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2750,6 +2750,7 @@ GameObject:
   - component: {fileID: 547545759}
   - component: {fileID: 547545761}
   - component: {fileID: 547545760}
+  - component: {fileID: 547545762}
   m_Layer: 0
   m_Name: Object_1
   m_TagString: Untagged
@@ -2822,6 +2823,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 547545758}
   m_Mesh: {fileID: -2346428509227581198, guid: e234a6f2164d09c4caacddcb5c15fd4c, type: 3}
+--- !u!64 &547545762
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547545758}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2346428509227581198, guid: e234a6f2164d09c4caacddcb5c15fd4c, type: 3}
 --- !u!1 &550267849
 GameObject:
   m_ObjectHideFlags: 0
@@ -2887,6 +2902,19 @@ MonoBehaviour:
   axisValue:
     actionPath: /actions/default/in/TouchpadPosition
     needsReinit: 0
+  enables:
+  - {fileID: 2132520928}
+  - {fileID: 711843810}
+  - {fileID: 1406500819}
+  - {fileID: 1299279169}
+  - {fileID: 1345017530}
+  - {fileID: 236763684}
+  - {fileID: 538360392}
+  - {fileID: 1710217953}
+  - {fileID: 1217029127}
+  disables:
+  - {fileID: 174625272}
+  - {fileID: 1758582297}
   menus:
   - {fileID: 1406500825}
   - {fileID: 1299279175}
@@ -3377,7 +3405,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drawingSegment: {fileID: 75563289551538414, guid: 41001c798473dae42808be132f2ab292,
     type: 3}
-  curSegment: {fileID: 0}
   modelTransform: {fileID: 1915900268}
 --- !u!1 &662563024
 GameObject:
@@ -3851,7 +3878,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &711843811
 Transform:
   m_ObjectHideFlags: 0
@@ -4025,6 +4052,7 @@ GameObject:
   - component: {fileID: 868076995}
   - component: {fileID: 868076997}
   - component: {fileID: 868076996}
+  - component: {fileID: 868076998}
   m_Layer: 0
   m_Name: Object_1
   m_TagString: Untagged
@@ -4097,6 +4125,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 868076994}
   m_Mesh: {fileID: -2346428509227581198, guid: a6cde1f287153874e8ddda0a192f15e6, type: 3}
+--- !u!114 &868076998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 868076994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8f27287e125b04481f6c8045e77b94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &938661683
 GameObject:
   m_ObjectHideFlags: 0
@@ -4387,7 +4427,6 @@ GameObject:
   - component: {fileID: 1078376782}
   - component: {fileID: 1078376785}
   - component: {fileID: 1078376784}
-  - component: {fileID: 1078376783}
   m_Layer: 0
   m_Name: Object_3
   m_TagString: Untagged
@@ -4410,18 +4449,6 @@ Transform:
   m_Father: {fileID: 595718612}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1078376783
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078376781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b8f27287e125b04481f6c8045e77b94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!23 &1078376784
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4827,6 +4854,19 @@ MonoBehaviour:
   axisValue:
     actionPath: /actions/default/in/TouchpadPosition
     needsReinit: 0
+  enables:
+  - {fileID: 174625272}
+  - {fileID: 1758582297}
+  disables:
+  - {fileID: 2132520928}
+  - {fileID: 711843810}
+  - {fileID: 1406500819}
+  - {fileID: 1299279169}
+  - {fileID: 1345017530}
+  - {fileID: 236763684}
+  - {fileID: 538360392}
+  - {fileID: 1710217953}
+  - {fileID: 1217029127}
   num: 9
   offset: 0
   buttons:
@@ -6528,7 +6568,7 @@ GameObject:
   - component: {fileID: 1418851295}
   - component: {fileID: 1418851294}
   - component: {fileID: 1418851293}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Object_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6686,7 +6726,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 20977add5ef7a174bba601b03578b10c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9cb06f509f5cf674a9f4e553d034cde1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7941,7 +7981,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1758582298
 Transform:
   m_ObjectHideFlags: 0
@@ -8361,6 +8401,10 @@ PrefabInstance:
     - target: {fileID: 475244, guid: 7a135b1a2cb9c8f488d4dd00c55ab283, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11445746, guid: 7a135b1a2cb9c8f488d4dd00c55ab283, type: 3}
+      propertyPath: traceLayerMask.m_Bits
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a135b1a2cb9c8f488d4dd00c55ab283, type: 3}
@@ -9918,7 +9962,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8b5e98d2d1afe5b4580f705891b35603, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7bdafaaaf81af084e9d24073676ccf6d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10473,7 +10517,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 74ca87261f12d5f4f859d6f855ecf2b5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0206d5fca79bfd34d9ad6932d1a36c4f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10767,7 +10811,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2132520929
 Transform:
   m_ObjectHideFlags: 0
@@ -12205,7 +12249,7 @@ Transform:
   m_GameObject: {fileID: 919132148767360830}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1.1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7800550852745064900}
@@ -12517,7 +12561,7 @@ GameObject:
   - component: {fileID: 686209655}
   - component: {fileID: 686209663}
   - component: {fileID: 686209656}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Object_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

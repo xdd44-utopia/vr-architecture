@@ -9,6 +9,9 @@ public class ToolMenuController : MonoBehaviour
 {
 	public SteamVR_Action_Vector2 axisValue;
 
+	public GameObject[] enables;
+	public GameObject[] disables;
+
 	public SpawnMenuController[] menus;
 	
 	public int num;
@@ -31,6 +34,12 @@ public class ToolMenuController : MonoBehaviour
 	void Start()
 	{
 		GetComponent<RectTransform>().localScale = Vector3.zero;
+		foreach (GameObject go in enables) {
+			go.SetActive(true);
+		}
+		foreach (GameObject go in disables) {
+			go.SetActive(false);
+		}
 	}
 
 	// Update is called once per frame
