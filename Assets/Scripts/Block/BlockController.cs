@@ -7,6 +7,7 @@ public class BlockController : MonoBehaviour
 	private int blockID;
 
 	private ColorMenuController colorMenu;
+	private ColorMenuControllerHifi colorMenuHifi;
 	private GameObject highlight;
 
 	[HideInInspector]
@@ -36,7 +37,8 @@ public class BlockController : MonoBehaviour
 		furniture,
 		plane,
 		wall,
-		floor
+		floor,
+		drawing
 	}
 	public BlockType bt;
 
@@ -50,7 +52,12 @@ public class BlockController : MonoBehaviour
 		blockID = StatusRecord.blockCount;
 		StatusRecord.blockCount++;
 
-		colorMenu = GameObject.Find("ColorMenu").GetComponent<ColorMenuController>();
+		if (bt != BlockType.furniture) {
+			colorMenu = GameObject.Find("ColorMenu-LoFi").GetComponent<ColorMenuController>();
+		}
+		else {
+			colorMenuHifi = GameObject.Find("ColorMenu-HiFi").GetComponent<ColorMenuControllerHifi>();
+		}
 		highlight = transform.parent.GetChild(1).gameObject;
 
 		blockTransform = transform.parent;
@@ -67,31 +74,7 @@ public class BlockController : MonoBehaviour
 		
 		originalMat = GetComponent<Renderer>().material;
 		
-		Mesh mesh = GetComponent<MeshFilter>().mesh;
-		for (int i=0;i<mesh.vertices.Length;i++) {
-			maxX = Mathf.Max(maxX, mesh.vertices[i].x);
-			maxY = Mathf.Max(maxY, mesh.vertices[i].y);
-			maxZ = Mathf.Max(maxZ, mesh.vertices[i].z);
-		}
-		switch (bt) {
-			case BlockType.plane:
-				maxY = 0.2f;
-				break;
-			case BlockType.floor:
-				maxY = 0.2f;
-				break;
-			case BlockType.wall:
-				maxX = 0.2f;
-				break;
-		}
-		if (!isReal) {
-			maxX /= 10;
-			maxY /= 10;
-			maxZ /= 10;
-		}
-		maxX *= 1.01f;
-		maxY *= 1.01f;
-		maxZ *= 1.01f;
+		calcBoundingBox();
 
 		GameObject Lofi = GameObject.Find("ToolMenu-LoFi");
 		isLofi = Lofi != null && Lofi.activeSelf;
@@ -101,9 +84,11 @@ public class BlockController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		originalMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, blockTransform.localScale.y > 2f ? 0.4f : 0.9f);
-		GetComponent<Renderer>().material = originalMat;
-		if (rb == null) {
+		if (bt != BlockType.furniture) {
+			originalMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, blockTransform.localScale.y > 2f ? 0.4f : 0.9f);
+			GetComponent<Renderer>().material = originalMat;
+		}
+		if (rb == null && bt != BlockType.drawing) {
 			rb = synchroBlock.gameObject.GetComponent<Rigidbody>();
 		}
 
@@ -140,19 +125,25 @@ public class BlockController : MonoBehaviour
 			StatusRecord.currentBlock = -1;
 		}
 		blockTransform.position += deltaPos;
-		synchroBlock.transform.localPosition = blockTransform.localPosition;
+		if (bt != BlockType.drawing) {
+			synchroBlock.transform.localPosition = blockTransform.localPosition;
+		}
 		if (isReal) {
 			switch (bt) {
 				case BlockType.floor:
 					if (!isLofi) {
 						blockTransform.position = new Vector3(blockTransform.position.x, 3f, blockTransform.position.z);
-						synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, 3f, blockTransform.position.z);
+						if (bt != BlockType.drawing) {
+							synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, 3f, blockTransform.position.z);
+						}
 					}
 					break;
 				case BlockType.wall:
 					if (!isLofi) {
 						blockTransform.position = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.5f : 4.5f, blockTransform.position.z);
-						synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.5f : 4.5f, blockTransform.position.z);
+						if (bt != BlockType.drawing) {
+							synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.5f : 4.5f, blockTransform.position.z);
+						}
 					}
 					break;
 			}
@@ -214,7 +205,9 @@ public class BlockController : MonoBehaviour
 				scaleDir == Direction.y ? initScale.y * scalar : initScale.y,
 				scaleDir == Direction.z ? initScale.z * scalar : initScale.z
 			);
-			synchroBlock.transform.localScale = blockTransform.localScale;
+			if (bt != BlockType.drawing) {
+				synchroBlock.transform.localScale = blockTransform.localScale;
+			}
 			StatusRecord.currentBlock = blockID;
 			if (hasrb) {
 				rb.isKinematic = true;
@@ -233,7 +226,15 @@ public class BlockController : MonoBehaviour
 		highlight.transform.localScale = transform.localScale * 1.01f;
 		if (canOpenMenu()) {
 			if (StatusRecord.tool != StatusRecord.ControllerStatus.Menu) {
-				colorMenu.enableMenu(this);
+				if (bt != BlockType.furniture) {
+					colorMenu.enableMenu(this);
+				}
+				else {
+					colorMenuHifi.enableMenu(this);
+				}
+			}
+			else {
+				Debug.Log("Failed");
 			}
 		}
 
@@ -259,27 +260,58 @@ public class BlockController : MonoBehaviour
 			pos.z > blockTransform.position.z - (!isRotated ? maxZ : maxX) * (!isRotated ? blockTransform.localScale.z : blockTransform.localScale.x);
 	}
 
+	public void calcBoundingBox() {
+		Mesh mesh = GetComponent<MeshFilter>().mesh;
+		maxX = mesh.vertices[0].x;
+		maxY = mesh.vertices[0].y;
+		maxZ = mesh.vertices[0].z;
+		for (int i=0;i<mesh.vertices.Length;i++) {
+			maxX = Mathf.Max(maxX, mesh.vertices[i].x);
+			maxY = Mathf.Max(maxY, mesh.vertices[i].y);
+			maxZ = Mathf.Max(maxZ, mesh.vertices[i].z);
+		}
+		switch (bt) {
+			case BlockType.plane:
+				maxY = 0.2f;
+				break;
+			case BlockType.floor:
+				maxY = 0.2f;
+				break;
+			case BlockType.wall:
+				maxX = 0.2f;
+				break;
+		}
+		if (!isReal) {
+			maxX /= 10;
+			maxY /= 10;
+			maxZ /= 10;
+		}
+		maxX *= 1.01f;
+		maxY *= 1.01f;
+		maxZ *= 1.01f;
+	}
+
 	public void changeMat(int i, bool isActive) {
-		if (i >= ColorMenuController.materials.Length) {
+		if (i >= ColorMenuController.materials.Length || bt == BlockType.furniture) {
 			return;
 		}
 		currentMat = i;
 		originalMat = new Material(ColorMenuController.materials[currentMat]);
 		GetComponent<Renderer>().material = originalMat;
-		if (isActive) {
+		if (isActive && bt != BlockType.drawing) {
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().changeMat(i, false);
 		}
 	}
 
 	public void deleteBlock(bool isActive) {
-		if (isActive) {
+		if (isActive && bt != BlockType.drawing) {
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().deleteBlock(false);
 		}
 		Destroy(transform.parent.gameObject);
 	}
 
 	public void rotateBlock(bool isActive) {
-		if (isActive) {
+		if (isActive && bt != BlockType.drawing) {
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().rotateBlock(false);
 		}
 		transform.parent.localRotation = Quaternion.Euler(0, transform.parent.localRotation.eulerAngles.y + 90, 0);

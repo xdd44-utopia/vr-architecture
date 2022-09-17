@@ -83,9 +83,6 @@ public class GestureHandler : MonoBehaviour
 		}
 
 		leftGrabTimer += Time.deltaTime;
-		if (leftGrabClicked) {
-			Debug.Log("Left grabbed");
-		}
 		if (leftGrabClicked && leftGrabFrame == 1) {
 			leftGrabClicked = false;
 		}
