@@ -87,7 +87,7 @@ public class BlockController : MonoBehaviour
 	{
 
 		if (bt != BlockType.furniture) {
-			originalMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, blockTransform.localScale.y > 2f ? 0.4f : 0.9f);
+			originalMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, 0.9f);
 			GetComponent<Renderer>().material = originalMat;
 		}
 		if (rb == null && bt != BlockType.drawing) {
