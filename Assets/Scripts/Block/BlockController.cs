@@ -77,7 +77,7 @@ public class BlockController : MonoBehaviour
 		
 		calcBoundingBox();
 
-		GameObject Lofi = GameObject.Find("ToolMenu-LoFi");
+		GameObject Lofi = GameObject.Find("[FOR LO-FI] ToolMenu-LoFi");
 		isLofi = Lofi != null && Lofi.activeSelf;
 
 	}

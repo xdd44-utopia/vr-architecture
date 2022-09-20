@@ -27,7 +27,7 @@ public class SpawnMenuController : MonoBehaviour
 
 	void Start()
 	{
-		menu = GameObject.Find("ToolMenu-HiFi").GetComponent<ToolMenuController>();
+		menu = GameObject.Find("[FOR HI-FI] ToolMenu-HiFi").GetComponent<ToolMenuController>();
 		GetComponent<RectTransform>().localScale = Vector3.zero;
 	}
 
