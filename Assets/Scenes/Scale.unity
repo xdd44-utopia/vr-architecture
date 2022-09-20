@@ -2130,8 +2130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09dcb36eccfda7f4dad8bfa2bf948d12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventSystem: {fileID: 1377671986}
-  inputModule: {fileID: 1377671985}
+  eventSystem: {fileID: 0}
+  inputModule: {fileID: 0}
 --- !u!1 &451738768
 GameObject:
   m_ObjectHideFlags: 0
@@ -2851,12 +2851,12 @@ GameObject:
   - component: {fileID: 550267852}
   - component: {fileID: 550267851}
   m_Layer: 5
-  m_Name: ToolMenu-HiFi
+  m_Name: '[FOR HI-FI] ToolMenu-HiFi'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &550267850
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2912,6 +2912,8 @@ MonoBehaviour:
   - {fileID: 538360392}
   - {fileID: 1710217953}
   - {fileID: 1217029127}
+  - {fileID: 1605321044}
+  - {fileID: 2038365449}
   disables:
   - {fileID: 174625272}
   - {fileID: 1758582297}
@@ -4741,12 +4743,12 @@ GameObject:
   - component: {fileID: 1171317307}
   - component: {fileID: 1171317310}
   m_Layer: 5
-  m_Name: ToolMenu-LoFi
+  m_Name: '[FOR LO-FI] ToolMenu-LoFi'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1171317305
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4857,6 +4859,7 @@ MonoBehaviour:
   enables:
   - {fileID: 174625272}
   - {fileID: 1758582297}
+  - {fileID: 1605321044}
   disables:
   - {fileID: 2132520928}
   - {fileID: 711843810}
@@ -4867,6 +4870,7 @@ MonoBehaviour:
   - {fileID: 538360392}
   - {fileID: 1710217953}
   - {fileID: 1217029127}
+  - {fileID: 2038365449}
   num: 9
   offset: 0
   buttons:
@@ -4920,7 +4924,7 @@ Transform:
   - {fileID: 1667771213}
   - {fileID: 1360818581}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1187084586
 GameObject:
@@ -5659,7 +5663,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1333565252
 GameObject:
@@ -6291,88 +6295,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1377658627}
   m_CullTransparentMesh: 1
---- !u!1 &1377671983
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1377671987}
-  - component: {fileID: 1377671986}
-  - component: {fileID: 1377671985}
-  - component: {fileID: 1377671984}
-  m_Layer: 0
-  m_Name: EventSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1377671984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377671983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bf0f933c78c0974baea9357c173c9f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventCamera: {fileID: 386054691}
---- !u!114 &1377671985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377671983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
---- !u!114 &1377671986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377671983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
---- !u!4 &1377671987
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377671983}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1394649774
 GameObject:
   m_ObjectHideFlags: 0
@@ -7203,7 +7125,7 @@ GameObject:
   - component: {fileID: 1605321045}
   - component: {fileID: 1605321049}
   m_Layer: 5
-  m_Name: ColorMenu-LoFi
+  m_Name: ColorMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

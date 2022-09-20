@@ -53,7 +53,7 @@ public class BlockController : MonoBehaviour
 		StatusRecord.blockCount++;
 
 		if (bt != BlockType.furniture) {
-			colorMenu = GameObject.Find("ColorMenu-LoFi").GetComponent<ColorMenuController>();
+			colorMenu = GameObject.Find("ColorMenu").GetComponent<ColorMenuController>();
 		}
 		else {
 			colorMenuHifi = GameObject.Find("ColorMenu-HiFi").GetComponent<ColorMenuControllerHifi>();
