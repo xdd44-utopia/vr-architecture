@@ -678,6 +678,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   synchroBlock: {fileID: 0}
+  rb: {fileID: 0}
   bt: 1
   currentMat: 0
 --- !u!1 &175217341289194270
@@ -689,7 +690,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 175217341289194271}
-  - component: {fileID: 1850106664890721843}
+  - component: {fileID: 9212679917256362126}
   - component: {fileID: 3738455199577271733}
   m_Layer: 0
   m_Name: Deco4
@@ -716,8 +717,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &1850106664890721843
-MeshCollider:
+--- !u!65 &9212679917256362126
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -726,10 +727,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 9033276085596455351, guid: 21f73d3d24391b74a816bffe07a3e7f2, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.19075543, y: 0.46686885, z: 0.1907554}
+  m_Center: {x: 0, y: 0.21938585, z: 0}
 --- !u!54 &3738455199577271733
 Rigidbody:
   m_ObjectHideFlags: 0

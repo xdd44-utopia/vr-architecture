@@ -47,7 +47,7 @@ public class ToolMenuControllerLofi : MonoBehaviour
 	void Update()
 	{
 		timer += Time.deltaTime;
-		if (!viewing && GestureHandler.leftGrabClicked && !isInsideAnyBlock() && StatusRecord.tool != StatusRecord.ControllerStatus.Menu) {
+		if (!viewing && (GestureHandler.leftGrabClicked || GestureHandler.rightGrabClicked) && !isInsideAnyBlock() && StatusRecord.tool != StatusRecord.ControllerStatus.Menu) {
 			isPrevHand = StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl;
 			buttons[0].GetComponent<Image>().sprite = isPrevHand ? drawTool : handTool;
 			if (StatusRecord.switchToRay()) {

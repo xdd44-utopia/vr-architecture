@@ -28,6 +28,7 @@ public class BlockController : MonoBehaviour
 		x, y, z
 	}
 	private Direction scaleDir;
+	private Vector3 offsetPos;
 	private Vector3 initScale;
 	private bool isRotated = false;
 	private bool hasMoved = false;
@@ -97,23 +98,33 @@ public class BlockController : MonoBehaviour
 		//Move
 
 		hasMoved = false;
-		Vector3 deltaPos = Vector3.zero;
-		if (GestureHandler.leftTriggerPressed && !GestureHandler.rightTriggerPressed && leftHandInside() &&
-			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl &&
-			(StatusRecord.currentBlock == blockID || StatusRecord.currentBlock == -1)
+		if (GestureHandler.leftTriggerPressed && !GestureHandler.rightTriggerPressed &&
+			((leftHandInside() && StatusRecord.currentBlock == -1) || StatusRecord.currentBlock == blockID) &&
+			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl
 		) {
-			deltaPos = GestureHandler.leftHandDeltaPos;
-			StatusRecord.currentBlock = blockID;
+			if (StatusRecord.currentBlock == -1) {
+				StatusRecord.currentBlock = blockID;
+				offsetPos = blockTransform.position - GestureHandler.leftHandPos;
+			}
+			else {
+				blockTransform.position = GestureHandler.leftHandPos + offsetPos;
+			}
 			if (hasrb) {
 				rb.isKinematic = true;
 			}
 			hasMoved = true;
 		}
-		else if (GestureHandler.rightTriggerPressed && !GestureHandler.leftTriggerPressed && rightHandInside() &&
-			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl &&
-			(StatusRecord.currentBlock == blockID || StatusRecord.currentBlock == -1)
+		else if (GestureHandler.rightTriggerPressed && !GestureHandler.leftTriggerPressed &&
+			((rightHandInside() && StatusRecord.currentBlock == -1) || StatusRecord.currentBlock == blockID) &&
+			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl
 		) {
-			deltaPos = GestureHandler.rightHandDeltaPos;
+			if (StatusRecord.currentBlock == -1) {
+				StatusRecord.currentBlock = blockID;
+				offsetPos = blockTransform.position - GestureHandler.rightHandPos;
+			}
+			else {
+				blockTransform.position = GestureHandler.rightHandPos + offsetPos;
+			}
 			StatusRecord.currentBlock = blockID;
 			if (hasrb) {
 				rb.isKinematic = true;
@@ -126,29 +137,26 @@ public class BlockController : MonoBehaviour
 			}
 			StatusRecord.currentBlock = -1;
 		}
-		blockTransform.position += deltaPos;
-		if (bt != BlockType.drawing) {
-			synchroBlock.transform.localPosition = blockTransform.localPosition;
-		}
+		
 		if (isReal) {
 			switch (bt) {
 				case BlockType.floor:
 					if (!isLofi) {
 						blockTransform.position = new Vector3(blockTransform.position.x, 3f, blockTransform.position.z);
-						if (bt != BlockType.drawing) {
-							synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, 3f, blockTransform.position.z);
-						}
 					}
 					break;
 				case BlockType.wall:
 					if (!isLofi) {
 						blockTransform.position = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.5f : 4.5f, blockTransform.position.z);
-						if (bt != BlockType.drawing) {
-							synchroBlock.transform.localPosition = new Vector3(blockTransform.position.x, blockTransform.position.y < 3 ? 1.5f : 4.5f, blockTransform.position.z);
-						}
 					}
 					break;
 			}
+			if (blockTransform.position.y < 0.1f) {
+				blockTransform.position = new Vector3(blockTransform.position.x, 0.1f, blockTransform.position.z);
+			}
+		}
+		if (bt != BlockType.drawing) {
+			synchroBlock.transform.localPosition = blockTransform.localPosition;
 		}
 		
 		Vector3 leftInitPos = GestureHandler.leftHandInitPos;
@@ -269,7 +277,7 @@ public class BlockController : MonoBehaviour
 		return isInside(GestureHandler.rightHandPos);
 	}
 	private bool isInside(Vector3 pos) {
-		pos = blockTransform.InverseTransformPoint(pos);
+		pos = transform.InverseTransformPoint(pos);
 		return
 			pos.x < maxX &&
 			pos.x > - maxX &&
@@ -281,30 +289,14 @@ public class BlockController : MonoBehaviour
 
 	public void calcBoundingBox() {
 		Mesh mesh = GetComponent<MeshFilter>().mesh;
-		maxX = mesh.vertices[0].x;
-		maxY = mesh.vertices[0].y;
-		maxZ = mesh.vertices[0].z;
+		maxX = 0.25f;
+		maxY = 0.25f;
+		maxZ = 0.25f;
 		for (int i=0;i<mesh.vertices.Length;i++) {
 			maxX = Mathf.Max(maxX, mesh.vertices[i].x);
 			maxY = Mathf.Max(maxY, mesh.vertices[i].y);
 			maxZ = Mathf.Max(maxZ, mesh.vertices[i].z);
 		}
-		switch (bt) {
-			case BlockType.plane:
-				maxY = isReal ? 0.2f : 1f;
-				break;
-			case BlockType.floor:
-				maxY = isReal ? 0.2f : 1f;
-				break;
-			case BlockType.wall:
-				maxX = isReal ? 0.2f : 1f;
-				break;
-		}
-		// if (!isReal) {
-		// 	maxX /= 10;
-		// 	maxY /= 10;
-		// 	maxZ /= 10;
-		// }
 		maxX *= 1.01f;
 		maxY *= 1.01f;
 		maxZ *= 1.01f;
