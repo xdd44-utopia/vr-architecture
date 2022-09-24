@@ -27,7 +27,7 @@ public class DrawingController : MonoBehaviour
 	{
 		timer += Time.deltaTime;
 		if (StatusRecord.tool == StatusRecord.ControllerStatus.Draw) {
-			if (GestureHandler.leftTriggerPressed && isInside()) {
+			if (GestureHandler.rightTriggerPressed && isInside()) {
 				if (curSegment == null) {
 					timer = 0;
 					curSegment = Instantiate(drawingSegment, this.transform);
@@ -38,7 +38,7 @@ public class DrawingController : MonoBehaviour
 				}
 				else {
 					modelTransform.locked = true;
-					Vector3 curPos = transform.InverseTransformPoint(GestureHandler.leftHandPos);
+					Vector3 curPos = transform.InverseTransformPoint(GestureHandler.rightHandPos);
 					if (Vector3.Distance(prevPos, curPos) > 0.05f) {
 						curLine.positionCount += 1;
 						curLine.SetPosition(curLine.positionCount - 1, curPos);
@@ -49,7 +49,7 @@ public class DrawingController : MonoBehaviour
 			else {
 				modelTransform.locked = false;
 			}
-			if (!GestureHandler.leftTriggerPressed && curSegment != null && timer > cooldown) {
+			if (!GestureHandler.rightTriggerPressed && curSegment != null && timer > cooldown) {
 				if (curLine.positionCount >= filter.Length) {
 					for (int i = filter.Length / 2;i < curLine.positionCount - filter.Length / 2 - 1;i++) {
 						Vector3 sum = Vector3.zero;
@@ -67,7 +67,7 @@ public class DrawingController : MonoBehaviour
 	}
 
 	private bool isInside() {
-		Vector3 handPos = transform.InverseTransformPoint(GestureHandler.leftHandPos);
+		Vector3 handPos = transform.InverseTransformPoint(GestureHandler.rightHandPos);
 		return !(handPos.x > 3.75f || handPos.x < -3.75f || handPos.y > 6 || handPos.y < 0 || handPos.z > 4f || handPos.z < -4f);
 	}
 }
