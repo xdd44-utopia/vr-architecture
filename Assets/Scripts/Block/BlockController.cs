@@ -14,7 +14,7 @@ public class BlockController : MonoBehaviour
 	[HideInInspector]
 	public Transform synchroBlock;
 	private Transform blockTransform;
-	private Rigidbody rb;
+	public Rigidbody rb;
 	private bool hasrb;
 	private bool isReal;
 
@@ -64,8 +64,8 @@ public class BlockController : MonoBehaviour
 		blockTransform = transform.parent;
 
 		isReal = blockTransform.parent == null;
-		hasrb = isReal && (bt == BlockType.block || bt == BlockType.furniture);
-		if (hasrb) {
+		hasrb = bt == BlockType.block || bt == BlockType.furniture;
+		if (isReal && hasrb) {
 			rb = blockTransform.gameObject.GetComponent<Rigidbody>();
 		}
 		else {
@@ -90,7 +90,7 @@ public class BlockController : MonoBehaviour
 			originalMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, 0.9f);
 			GetComponent<Renderer>().material = originalMat;
 		}
-		if (rb == null && bt != BlockType.drawing) {
+		if (rb == null && hasrb && !isReal) {
 			rb = synchroBlock.gameObject.GetComponent<Rigidbody>();
 		}
 
