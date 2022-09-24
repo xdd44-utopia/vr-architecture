@@ -6,6 +6,7 @@ using Valve.VR;
 public class PlaneConstructor : MonoBehaviour
 {
 	public GameObject planePrefab;
+	public Transform smallModel;
 	private Vector3[] line1;
 	private Vector3[] line2;
 	void Start()
@@ -96,13 +97,24 @@ public class PlaneConstructor : MonoBehaviour
 		mesh.triangles = trianglesList.ToArray();
 		mesh.MarkModified();
 		mesh.RecalculateNormals();
-		GameObject newPlane = Instantiate(planePrefab, offset, Quaternion.identity);
-		newPlane.transform.GetChild(0).GetComponent<MeshFilter>().mesh = mesh;
-		newPlane.transform.GetChild(1).GetComponent<MeshFilter>().mesh = mesh;
-		newPlane.transform.GetChild(2).GetComponent<MeshFilter>().mesh = mesh;
-		newPlane.transform.GetChild(2).GetComponent<MeshCollider>().sharedMesh = mesh;
-		newPlane.transform.GetChild(0).GetComponent<BlockController>().calcBoundingBox();
-
+		GameObject realPlane = Instantiate(planePrefab, offset, Quaternion.identity);
+		realPlane.transform.GetChild(0).GetComponent<MeshFilter>().mesh = mesh;
+		realPlane.transform.GetChild(1).GetComponent<MeshFilter>().mesh = mesh;
+		realPlane.transform.GetChild(2).GetComponent<MeshFilter>().mesh = mesh;
+		realPlane.transform.GetChild(2).GetComponent<MeshCollider>().sharedMesh = mesh;
+		realPlane.transform.GetChild(0).GetComponent<BlockController>().calcBoundingBox();
+		GameObject smallPlane = Instantiate(planePrefab, smallModel);
+		smallPlane.transform.GetChild(0).GetComponent<MeshFilter>().mesh = mesh;
+		smallPlane.transform.GetChild(1).GetComponent<MeshFilter>().mesh = mesh;
+		smallPlane.transform.GetChild(2).GetComponent<MeshFilter>().mesh = mesh;
+		smallPlane.transform.GetChild(2).GetComponent<MeshCollider>().sharedMesh = mesh;
+		smallPlane.transform.GetChild(0).GetComponent<BlockController>().calcBoundingBox();
+		
+		realPlane.transform.GetChild(0).gameObject.GetComponent<BlockController>().synchroBlock = smallPlane.transform;
+		smallPlane.transform.GetChild(0).gameObject.GetComponent<BlockController>().synchroBlock = realPlane.transform;
+		smallPlane.transform.localPosition = realPlane.transform.localPosition;
+		smallPlane.transform.localScale = realPlane.transform.localScale;
+		realPlane.transform.GetChild(0).gameObject.GetComponent<BlockController>().changeMat(realPlane.transform.GetChild(0).gameObject.GetComponent<BlockController>().currentMat, true);
 	}
 	
 }

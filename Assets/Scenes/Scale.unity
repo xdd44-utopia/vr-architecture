@@ -2702,6 +2702,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planePrefab: {fileID: 2823917174299527004, guid: 4d3b8375090e85641a413844853f3b96,
     type: 3}
+  smallModel: {fileID: 720765923}
 --- !u!4 &517387418
 Transform:
   m_ObjectHideFlags: 0

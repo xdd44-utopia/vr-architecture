@@ -155,9 +155,7 @@ public class BlockController : MonoBehaviour
 				blockTransform.position = new Vector3(blockTransform.position.x, 0.1f, blockTransform.position.z);
 			}
 		}
-		if (bt != BlockType.drawing) {
-			synchroBlock.transform.localPosition = blockTransform.localPosition;
-		}
+		synchroBlock.transform.localPosition = blockTransform.localPosition;
 		
 		Vector3 leftInitPos = GestureHandler.leftHandInitPos;
 		Vector3 rightInitPos = GestureHandler.rightHandInitPos;
@@ -234,9 +232,7 @@ public class BlockController : MonoBehaviour
 				scaleDir == Direction.y ? initScale.y * scalar : initScale.y,
 				scaleDir == Direction.z ? initScale.z * scalar : initScale.z
 			);
-			if (bt != BlockType.drawing) {
-				synchroBlock.transform.localScale = blockTransform.localScale;
-			}
+			synchroBlock.transform.localScale = blockTransform.localScale;
 			StatusRecord.currentBlock = blockID;
 			if (hasrb) {
 				rb.isKinematic = true;
@@ -309,20 +305,20 @@ public class BlockController : MonoBehaviour
 		currentMat = i;
 		originalMat = new Material(ColorMenuController.materials[currentMat]);
 		GetComponent<Renderer>().material = originalMat;
-		if (isActive && bt != BlockType.drawing) {
+		if (isActive) {
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().changeMat(i, false);
 		}
 	}
 
 	public void deleteBlock(bool isActive) {
-		if (isActive && bt != BlockType.drawing) {
+		if (isActive) {
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().deleteBlock(false);
 		}
 		Destroy(transform.parent.gameObject);
 	}
 
 	public void rotateBlock(bool isActive) {
-		if (isActive && bt != BlockType.drawing) {
+		if (isActive) {
 			synchroBlock.GetChild(0).gameObject.GetComponent<BlockController>().rotateBlock(false);
 		}
 		transform.parent.localRotation = Quaternion.Euler(0, transform.parent.localRotation.eulerAngles.y + 90, 0);
