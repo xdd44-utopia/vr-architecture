@@ -20,7 +20,7 @@ public class ModelTransform : MonoBehaviour
 	private bool modelEnabled = true;
 	private const float enableScale = 0.05f;
 	private const float disableScale = 0.005f;
-	private const float enableHandleRadius = 0.32f;
+	private const float enableHandleRadius = 0.25f;
 	private const float disableHandleRadius = 0.1f;
 	
 	void Start()

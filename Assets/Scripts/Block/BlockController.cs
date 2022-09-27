@@ -221,6 +221,7 @@ public class BlockController : MonoBehaviour
 					break;
 			}
 			if (Single.IsNaN(scalar)) {
+				Debug.Log("?");
 				scalar = 1;
 			}
 			scalar = Mathf.Clamp(scalar, 0.2f, 5f);
@@ -248,7 +249,7 @@ public class BlockController : MonoBehaviour
 		//Menu
 
 		highlight.SetActive(leftHandInside() || rightHandInside());
-		highlight.transform.localScale = transform.localScale * 1.01f;
+		highlight.transform.localScale = new Vector3(1.01f, 1.05f, 1.01f);
 		if (canOpenMenu()) {
 			if (StatusRecord.tool != StatusRecord.ControllerStatus.Menu) {
 				if (bt != BlockType.furniture) {
@@ -285,13 +286,16 @@ public class BlockController : MonoBehaviour
 
 	public void calcBoundingBox() {
 		Mesh mesh = GetComponent<MeshFilter>().mesh;
-		maxX = 0.25f;
-		maxY = 0.25f;
-		maxZ = 0.25f;
+		maxX = 0.2f;
+		maxY = 0.2f;
+		maxZ = 0.2f;
 		for (int i=0;i<mesh.vertices.Length;i++) {
 			maxX = Mathf.Max(maxX, mesh.vertices[i].x);
 			maxY = Mathf.Max(maxY, mesh.vertices[i].y);
 			maxZ = Mathf.Max(maxZ, mesh.vertices[i].z);
+		}
+		if (maxY * blockTransform.localScale.y < 0.05f) {
+			maxY = 0.05f / blockTransform.localScale.y;
 		}
 		maxX *= 1.01f;
 		maxY *= 1.01f;
