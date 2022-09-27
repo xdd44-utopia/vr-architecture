@@ -28,7 +28,9 @@ public class BlockController : MonoBehaviour
 		x, y, z
 	}
 	private Direction scaleDir;
-	private Vector3 offsetPos;
+	private Vector3 prevSafeScale;
+	private Vector3 leftOffsetPos;
+	private Vector3 rightOffsetPos;
 	private Vector3 initScale;
 	private bool isRotated = false;
 	private bool hasMoved = false;
@@ -48,6 +50,10 @@ public class BlockController : MonoBehaviour
 	public int currentMat;
 
 	private bool isLofi;
+
+
+	private float timer = 0;
+	private float cooldown = 0.25f;
 	
 	void Awake()
 	{
@@ -86,6 +92,8 @@ public class BlockController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		
+		timer += Time.deltaTime;
 
 		if (bt != BlockType.furniture) {
 			originalMat.color = new Color(originalMat.color.r, originalMat.color.g, originalMat.color.b, 0.9f);
@@ -100,14 +108,14 @@ public class BlockController : MonoBehaviour
 		hasMoved = false;
 		if (GestureHandler.leftTriggerPressed && !GestureHandler.rightTriggerPressed &&
 			((leftHandInside() && StatusRecord.currentBlock == -1) || StatusRecord.currentBlock == blockID) &&
-			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl
+			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl && timer > cooldown
 		) {
 			if (StatusRecord.currentBlock == -1) {
 				StatusRecord.currentBlock = blockID;
-				offsetPos = blockTransform.position - GestureHandler.leftHandPos;
+				leftOffsetPos = blockTransform.position - GestureHandler.leftHandPos;
 			}
 			else {
-				blockTransform.position = GestureHandler.leftHandPos + offsetPos;
+				blockTransform.position = GestureHandler.leftHandPos + leftOffsetPos;
 			}
 			if (hasrb) {
 				rb.isKinematic = true;
@@ -116,14 +124,14 @@ public class BlockController : MonoBehaviour
 		}
 		else if (GestureHandler.rightTriggerPressed && !GestureHandler.leftTriggerPressed &&
 			((rightHandInside() && StatusRecord.currentBlock == -1) || StatusRecord.currentBlock == blockID) &&
-			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl
+			StatusRecord.tool == StatusRecord.ControllerStatus.BlockControl && timer > cooldown
 		) {
 			if (StatusRecord.currentBlock == -1) {
 				StatusRecord.currentBlock = blockID;
-				offsetPos = blockTransform.position - GestureHandler.rightHandPos;
+				rightOffsetPos = blockTransform.position - GestureHandler.rightHandPos;
 			}
 			else {
-				blockTransform.position = GestureHandler.rightHandPos + offsetPos;
+				blockTransform.position = GestureHandler.rightHandPos + rightOffsetPos;
 			}
 			StatusRecord.currentBlock = blockID;
 			if (hasrb) {
@@ -169,6 +177,9 @@ public class BlockController : MonoBehaviour
 		}
 
 		//Scale
+		if (blockTransform.localScale.magnitude > 0.4f && blockTransform.localScale.magnitude < 100) {
+			prevSafeScale = blockTransform.localScale;
+		}
 		hasRotated = false;
 		if (
 			((GestureHandler.leftTriggerDown && GestureHandler.rightTriggerDown) ||
@@ -240,10 +251,15 @@ public class BlockController : MonoBehaviour
 			}
 		}
 		else if (StatusRecord.currentBlock == blockID && !hasMoved) {
+			timer = 0;
 			StatusRecord.currentBlock = -1;
 			if (hasrb) {
 				rb.isKinematic = false;
 			}
+		}
+		if (blockTransform.localScale.magnitude < 0.4f || blockTransform.localScale.magnitude > 100) {
+			Debug.Log("F");
+			blockTransform.localScale = prevSafeScale;
 		}
 
 		//Menu
